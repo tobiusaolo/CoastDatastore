@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block title %}Admin {% endblock title%} {% block
+content %}
+<!-- BEGIN: Page Main-->
+<div id="main">
+  <div class="row">
+    <div class="content-wrapper-before gradient-shadow"></div>
+    <div class="col s12">
+      <div class="container">
+        <table
+          id="example"
+          class="mdl-data-table"
+          style="width: 100%; height: 10px"
+        >
+          <thead>
+            <tr>
+              <th>Data Source</th>
+              <th>Text File(txt)</th>
+              <th>CSV File</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <!-- Content Area Ends -->
+        <div class="content-overlay"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END: Page Main-->
+{% endblock %}
