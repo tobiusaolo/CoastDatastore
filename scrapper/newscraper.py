@@ -9,9 +9,10 @@ import urllib
 import html5lib
 import pandas as pd
 import nltk
+import datetime
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters
 from pandas import DataFrame
-timez = '2021/09/09'
+timez = '2021/09/16'
 time = '2021-09-09'
 
 
@@ -99,9 +100,148 @@ def ssegwanga_scrapper():
     df.drop_duplicates(subset='Luganda', keep='first', inplace=True)
     df['Luganda'].replace('  ', np.nan, inplace=True)
     df = df.dropna(subset=['Luganda'])
-    # df = df[~df['Luganda'].str.split().str.len().lt(3)]
+    # df = df[~df['Luganda'].str.split().str.len().lt(20)]
     df.to_csv(filename, index=False)
 
 
-ssegwanga_scrapper()
+def dembe_scrapper():
+    general_name = '_dembe.csv'
+    filename = time+general_name
+    link_urls = []
+    corpus_data = []
+    sentx = []
+    headz = []
+    for page in range(1, 2):
+        #     https://sseggwanga.com/index.php/category/amawulire/page/2/
+        #     https://www.bukedde.co.ug/category/kasalabecca/page/{}
+        url = "https://www.dembefm.ug/category/amawulire/page/{}".format(page)
+        r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+        soup = BeautifulSoup(r.content)
+        for division in soup.find_all("div", attrs={"class": "blog-archive"}):
+            for link in division.find_all('h2', attrs={"class": "blog-arc-heading"}):
+                for rel in link.find_all('a'):
+                    pager = rel.get('href')
+                    r = requests.get(
+                        pager, headers={'User-Agent': 'Mozilla/5.0'})
+                    soup = BeautifulSoup(r.content)
+                    for division in soup.find_all("div", attrs={"class": "single-col"}):
+                        for dayt in division.find_all("p", attrs={"class": "blog-date"}):
+                            f = dayt.get_text()
+                            data = f.replace("th", "")
+                            dat = datetime.datetime.strptime(
+                                data, '%B %d, %Y').strftime('%Y/%m/%d')
+                            if dat == timez:
+                                for link in division.find_all('h2'):
+                                    f = link.get_text()
+                                    sentences = nltk.sent_tokenize(f)
+                                    for sentence in sentences:
+                                        corpus_data.append(sentence)
+                                for link in division.find_all('p'):
+                                    fp = link.get_text()
+                                    psentences = nltk.sent_tokenize(fp)
+                                    for psentence in psentences:
+                                        sentx.append(psentence)
+    corpus_data.extend(sentx)
+    df = pd.DataFrame(corpus_data, columns=['Luganda'])
+    df.drop_duplicates(subset='Luganda', keep='first', inplace=True)
+    df['Luganda'].replace('  ', np.nan, inplace=True)
+    df = df.dropna(subset=['Luganda'])
+    df = df[~df['Luganda'].str.split().str.len().lt(5)]
+    df.to_csv(filename, index=False)
+
+
+def galaxyradio_scrapper():
+    general_name = '_galaxyfm.csv'
+    filename = time+general_name
+    corpus_data = []
+    headz = []
+    for page in range(1, 2):
+        url = "https://www.galaxyfm.co.ug/luganda/page/{}".format(page)
+        r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+        soup = BeautifulSoup(r.content)
+        for division in soup.find_all("div", attrs={"class": "news-feed section group"}):
+            for link in division.find_all('div', attrs={"class": "news-item col span_1_of_2"}):
+                for rel in link.find_all('a'):
+                    pager = rel.get('href')
+                    if timez in pager:
+                        r = requests.get(pager)
+                        soup = BeautifulSoup(r.content)
+                        for hdivision in soup.find_all("div", attrs={"class": "container body-block clear_fix mg-t-20 mg-b-10"}):
+                            for hdlines in hdivision.find_all("h1", attrs={"class": "post-title"}):
+                                hdline = hdlines.get_text()
+                                headz.append(hdline)
+                        for day_division in soup.find_all("div", attrs={"class": "post-content with-videos"}):
+                            for mboz in day_division.find_all('p'):
+                                mf = mboz.get_text()
+                                msentences = nltk.sent_tokenize(mf)
+                                for msentence in msentences:
+                                    corpus_data.append(msentence)
+    corpus_data.extend(headz)
+    df = pd.DataFrame(corpus_data, columns=['Luganda'])
+    df.drop_duplicates(subset='Luganda', keep='first', inplace=True)
+    df['Luganda'].replace('  ', np.nan, inplace=True)
+    df = df.dropna(subset=['Luganda'])
+    df = df[~df['Luganda'].str.split().str.len().lt(5)]
+    df.to_csv(filename, index=False)
+
+
+def simba_scrapper():
+    general_name = '_simba.csv'
+    filename = time+general_name
+    link_urls = []
+    corpus_data = []
+    sentx = []
+    headz = []
+    for page in range(1, 6):
+        url = "https://www.radiosimba.ug/latest-news/page/{}".format(page)
+        r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+        soup = BeautifulSoup(r.content)
+        for division in soup.find_all("div", attrs={"class": "mvp-main-body-blog left relative"}):
+            for link in division.find_all('ul'):
+                for paarg in link.find_all('li'):
+                    for post_time in paarg.find_all('span', attrs={"class": "mvp-post-info-date left relative"}):
+                        ptime = post_time.get_text()
+                        duration = "hours"
+                        if duration in ptime:
+                            ptime = ptime.replace('/', '')
+                            ptime = ptime.replace('hours', '')
+                            ptime = ptime.replace('ago', '')
+                            if int(ptime) <= 15:
+                                for xlink in paarg.find_all('a'):
+                                    pager = xlink.get('href')
+                                    r = requests.get(
+                                        pager, headers={'User-Agent': 'Mozilla/5.0'})
+                                    soup = BeautifulSoup(r.content)
+                                    for division in soup.find_all("div", attrs={"class": "theiaPostSlider_preloadedSlide"}):
+                                        for link in division.find_all('p'):
+                                            f = link.get_text()
+                                            sentences = nltk.sent_tokenize(f)
+                                            for sentence in sentences:
+                                                corpus_data.append(sentence)
+                                    for division in soup.find_all("div", attrs={"class": "_1mf _1mj"}):
+                                        for link in division.find_all('span'):
+                                            f = link.get_text()
+                                            sentences = nltk.sent_tokenize(f)
+                                            for sentence in sentences:
+                                                sentx.append(sentence)
+                                    for division in soup.find_all("div", attrs={"class": "left relative"}):
+                                        for link in division.find_all('h1'):
+                                            f = link.get_text()
+                                            sentences = nltk.sent_tokenize(f)
+                                            for sentence in sentences:
+                                                headz.append(sentence)
+    corpus_data.extend(sentx)
+    headz.extend(corpus_data)
+    major = list(set(headz))
+    df = pd.DataFrame(major, columns=['Luganda'])
+    df.drop_duplicates(subset='Luganda', keep='first', inplace=True)
+    df['Luganda'].replace('  ', np.nan, inplace=True)
+    df = df.dropna(subset=['Luganda'])
+    # df = df[~df['Luganda'].str.split().str.len().lt(5)]
+    df.to_csv(filename, index=False)
+
+# simba_scrapper()
+# galaxyradio_scrapper()
+# dembe_scrapper()
+# ssegwanga_scrapper()
 # gambuuze_scrapper()
