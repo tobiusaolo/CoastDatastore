@@ -22,11 +22,16 @@ sched.start()
 
 
 app = Flask(__name__)
+db_connect = create_engine(
+    'postgresql://awjzgmwqiatzjg:e4424ae3d375e2057bcc9cde832672940d44ea2c05260e28ccb04dc1575ec52d@ec2-34-204-22-76.compute-1.amazonaws.com:5432/dabbhqt4pegslv')
+conn = db_connect.connect()
 
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    query = conn.execute("select * from socialmedia")
+    data = query.cursor.fetchall()
+    return render_template('home.html', data=data)
 
 
 @app.route('/socialmedia')

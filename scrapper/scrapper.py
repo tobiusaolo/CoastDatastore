@@ -9,7 +9,6 @@ import nltk
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters
 import re
-from google.cloud import storage
 import os
 import glob
 import psycopg2
