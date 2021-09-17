@@ -1,4 +1,6 @@
 from bs4 import BeautifulSoup, SoupStrainer, NavigableString, Tag
+from sqlalchemy import create_engine
+import time
 import csv
 import requests
 import re
@@ -12,13 +14,21 @@ import nltk
 import datetime
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters
 from pandas import DataFrame
-timez = '2021/09/16'
-time = '2021-09-09'
+import dropbox
+dropbox_access_token = "-EBxOhuzOI4AAAAAAAAAAU1JAwmpo6Xy9PsYOguc1-mFh5QJsWAvENXusH06oWXr"
+client = dropbox.Dropbox(dropbox_access_token)
+db_connect = create_engine(
+    'postgresql://awjzgmwqiatzjg:e4424ae3d375e2057bcc9cde832672940d44ea2c05260e28ccb04dc1575ec52d@ec2-34-204-22-76.compute-1.amazonaws.com:5432/dabbhqt4pegslv')
+conn = db_connect.connect()
+timez = datetime.datetime.today().strftime("%Y/%m/%d")
+time = datetime.datetime.today().strftime("%Y-%m-%d")
 
 
 def gambuuze_scrapper():
     general_name = '_gambuuze.csv'
     filename = time+general_name
+    dropbox_path = "/Coast_data/"+filename
+    datasource = "Gambuuze news"
     scraped_data = []
     today_articles = []
     heads_lines = []
@@ -53,19 +63,28 @@ def gambuuze_scrapper():
     df = pd.DataFrame(scraped_data, columns=['Luganda'])
     df.drop_duplicates(subset='Luganda', keep='first', inplace=True)
     df['Luganda'].replace('  ', np.nan, inplace=True)
+    corpus_length = len(df)
     df = df.dropna(subset=['Luganda'])
-    # df = df[~df['Luganda'].str.split().str.len().lt(3)]
-    df.to_csv(filename, index=False)
+    if corpus_length >= 2:
+        df.to_csv(filename, index=False)
+        client.files_upload(open(filename, "rb").read(), dropbox_path)
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+    else:
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
 
 
 def ssegwanga_scrapper():
     general_name = '_ssegwanga.csv'
     filename = time+general_name
+    datasource = "Ssegwanga news"
+    dropbox_path = "/Coast_data/"+filename
     link_urls = []
     corpus = []
     subhd = []
     hlines = []
-    url = url = "https://sseggwanga.com/index.php/2021/09/13/"
+    url = url = "https://sseggwanga.com/index.php/"+timez+"/"
     r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
     soup = BeautifulSoup(r.content)
     snippet = soup.find_all('div', attrs={"class": "td-ss-main-content"})
@@ -100,20 +119,27 @@ def ssegwanga_scrapper():
     df.drop_duplicates(subset='Luganda', keep='first', inplace=True)
     df['Luganda'].replace('  ', np.nan, inplace=True)
     df = df.dropna(subset=['Luganda'])
-    # df = df[~df['Luganda'].str.split().str.len().lt(20)]
-    df.to_csv(filename, index=False)
+    corpus_length = len(df)
+    if corpus_length >= 2:
+        df.to_csv(filename, index=False)
+        client.files_upload(open(filename, "rb").read(), dropbox_path)
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+    else:
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
 
 
 def dembe_scrapper():
     general_name = '_dembe.csv'
     filename = time+general_name
+    dropbox_path = "/Coast_data/"+filename
+    datasource = "Dembe FM"
     link_urls = []
     corpus_data = []
     sentx = []
     headz = []
     for page in range(1, 2):
-        #     https://sseggwanga.com/index.php/category/amawulire/page/2/
-        #     https://www.bukedde.co.ug/category/kasalabecca/page/{}
         url = "https://www.dembefm.ug/category/amawulire/page/{}".format(page)
         r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
         soup = BeautifulSoup(r.content)
@@ -147,12 +173,22 @@ def dembe_scrapper():
     df['Luganda'].replace('  ', np.nan, inplace=True)
     df = df.dropna(subset=['Luganda'])
     df = df[~df['Luganda'].str.split().str.len().lt(5)]
-    df.to_csv(filename, index=False)
+    corpus_length = len(df)
+    if corpus_length >= 2:
+        df.to_csv(filename, index=False)
+        client.files_upload(open(filename, "rb").read(), dropbox_path)
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+    else:
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
 
 
 def galaxyradio_scrapper():
     general_name = '_galaxyfm.csv'
     filename = time+general_name
+    datasource = "Galaxy FM"
+    dropbox_path = "/Coast_data/"+filename
     corpus_data = []
     headz = []
     for page in range(1, 2):
@@ -182,12 +218,22 @@ def galaxyradio_scrapper():
     df['Luganda'].replace('  ', np.nan, inplace=True)
     df = df.dropna(subset=['Luganda'])
     df = df[~df['Luganda'].str.split().str.len().lt(5)]
-    df.to_csv(filename, index=False)
+    corpus_length = len(df)
+    if corpus_length >= 2:
+        df.to_csv(filename, index=False)
+        client.files_upload(open(filename, "rb").read(), dropbox_path)
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+    else:
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
 
 
 def simba_scrapper():
     general_name = '_simba.csv'
     filename = time+general_name
+    datasource = "Radio Simba"
+    dropbox_path = "/Coast_data/"+filename
     link_urls = []
     corpus_data = []
     sentx = []
@@ -238,7 +284,16 @@ def simba_scrapper():
     df['Luganda'].replace('  ', np.nan, inplace=True)
     df = df.dropna(subset=['Luganda'])
     # df = df[~df['Luganda'].str.split().str.len().lt(5)]
-    df.to_csv(filename, index=False)
+    corpus_length = len(df)
+    if corpus_length >= 2:
+        df.to_csv(filename, index=False)
+        client.files_upload(open(filename, "rb").read(), dropbox_path)
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+    else:
+        query = conn.execute(
+            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+
 
 # simba_scrapper()
 # galaxyradio_scrapper()

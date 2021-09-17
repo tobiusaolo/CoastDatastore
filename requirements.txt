@@ -1,1 +1,33 @@
-bs4
+APScheduler == 3.7.0
+Flask == 2.0.1
+SQLAlchemy == 1.4.7
+beautifulsoup4 == 4.9.3
+dropbox == 11.19.0
+html5lib == 1.1
+
+# CoastDatastore/scrapper/scrapper.py: 5
+nest_asyncio == 1.5.1
+
+# CoastDatastore/scrapper/newscraper.py: 15
+# CoastDatastore/scrapper/scrapper.py: 10
+nltk == 3.6.2
+
+# CoastDatastore/scrapper/newscraper.py: 8
+# CoastDatastore/scrapper/scrapper.py: 7
+numpy == 1.19.5
+
+# CoastDatastore/scrapper/newscraper.py: 12,16
+# CoastDatastore/scrapper/scrapper.py: 6
+pandas == 1.2.4
+
+# CoastDatastore/scrapper/scrapper.py: 12
+protobuf == 3.6.1
+
+# CoastDatastore/scrapper/scrapper.py: 15
+psycopg2 == 2.9.1
+
+# CoastDatastore/scrapper/newscraper.py: 5
+requests == 2.22.0
+
+# CoastDatastore/scrapper/scrapper.py: 4
+twint == 2.1.20

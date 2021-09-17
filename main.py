@@ -1,7 +1,26 @@
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, jsonify, render_template, request, g, url_for, make_response
+# from flask_apscheduler import APScheduler
+
 from sqlalchemy import create_engine
-import schedule
-import time
+from scrapper.newscraper import galaxyradio_scrapper, simba_scrapper, gambuuze_scrapper, ssegwanga_scrapper, dembe_scrapper
+from scrapper.scrapper import socialmedia
+
+
+def sensor():
+    galaxyradio_scrapper()
+    simba_scrapper()
+    gambuuze_scrapper()
+    ssegwanga_scrapper()
+    dembe_scrapper()
+    socialmedia()
+
+
+sched = BackgroundScheduler(daemon=True)
+sched.add_job(sensor, 'interval', hours=10)
+sched.start()
+
+
 app = Flask(__name__)
 
 
@@ -31,8 +50,4 @@ def checkjob():
 
 if __name__ == "__main__":
     app.run(debug=True)
-    schedule.every(4).seconds.do(checkjob)
-    while 1:
-        schedule.run_pending()
-        time.sleep(1)
     # app.run(debug=True)

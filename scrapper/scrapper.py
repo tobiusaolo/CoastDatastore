@@ -1,4 +1,3 @@
-import schedule
 from sqlalchemy import create_engine
 import time
 import datetime
@@ -19,9 +18,9 @@ dropbox_access_token = "-EBxOhuzOI4AAAAAAAAAAU1JAwmpo6Xy9PsYOguc1-mFh5QJsWAvENXu
 client = dropbox.Dropbox(dropbox_access_token)
 
 
-# db_connect = create_engine(
-# 'postgresql://awjzgmwqiatzjg:e4424ae3d375e2057bcc9cde832672940d44ea2c05260e28ccb04dc1575ec52d@ec2-34-204-22-76.compute-1.amazonaws.com:5432/dabbhqt4pegslv')
-# conn = db_connect.connect()
+db_connect = create_engine(
+    'postgresql://awjzgmwqiatzjg:e4424ae3d375e2057bcc9cde832672940d44ea2c05260e28ccb04dc1575ec52d@ec2-34-204-22-76.compute-1.amazonaws.com:5432/dabbhqt4pegslv')
+conn = db_connect.connect()
 punkt_param = PunktParameters()
 abbreviation = ['hon', 'rt', 'col', 'lt', 'maj', 'gen', 'fr']
 punkt_param.abbrev_types = set(abbreviation)
@@ -31,17 +30,6 @@ general_name = '_socialmedia.csv'
 filename = timez+general_name
 dropbox_path = "/Coast_data/"+filename
 # print(timez)
-
-
-def upload_blob(bucket_name, source_file_name, destination_blob_name):
-    """Uploads a file to the bucket."""
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-    blob.upload_from_filename(source_file_name)
-    print('File {} uploaded to {}.'.format(
-        source_file_name,
-        destination_blob_name))
 
 
 def socialmedia():
@@ -57,8 +45,8 @@ def socialmedia():
         c.Username = sourcehandle
         # c.Limit = 10
         c.Lang = 'en'
-        c.Since = '2021-09-14'
-        c.Until = '2021-09-16'
+        c.Since = '2021-09-16'
+        c.Until = '2021-09-17'
         c.Store_json = True
         c.Hide_output = True
         c.Output = "MOH.json"
@@ -86,14 +74,10 @@ def socialmedia():
             betadf['Sentences'] = betadf['Sentences'].map(
                 lambda x: x.lstrip('@'))
             betadf = betadf[~betadf['Sentences'].str.split().str.len().lt(6)]
-            print(len(betadf))
             gh = betadf['Sentences'].to_list()
-            print("******* handle*******  "+sourcehandle)
             for xy in gh:
                 copora.append(xy)
                 # print(xy)
-                # query = conn.execute(
-                # "insert into socialmedia(datasource,sentence) values('{0}','{1}')".format(sourcehandle, xy))
         except:
             print(sourcehandle + " is empty")
     # print(len(copora))
@@ -101,12 +85,15 @@ def socialmedia():
     df.drop_duplicates(subset='Luganda', keep='first', inplace=True)
     df['Luganda'].replace('  ', np.nan, inplace=True)
     df = df.dropna(subset=['Luganda'])
+    corpus_length = len(df)
     # df = df[~df['Luganda'].str.split().str.len().lt(3)]
     df.to_csv(filename, index=False)
     client.files_upload(open(filename, "rb").read(), dropbox_path)
+    query = conn.execute(
+        "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(sourcehandle, corpus_length))
 
 
-socialmedia()
+# socialmedia()
 # filename = "2021-09-13_socialmedia.csv"
 # upload_blob("gambuuzeug", filename, filename)
 # schedule.every(20).seconds.do(socialmedia)
