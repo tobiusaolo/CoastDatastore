@@ -4,7 +4,7 @@ SQLAlchemy == 1.4.7
 beautifulsoup4 == 4.9.3
 dropbox == 11.19.0
 html5lib == 1.1
-
+gunicorn
 # CoastDatastore/scrapper/scrapper.py: 5
 nest_asyncio == 1.5.1
 
