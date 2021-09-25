@@ -305,7 +305,7 @@
         sidenav-light sidenav-active-square
         full
       "
-      style="background-color: blue"
+      style="padding: 30px"
       id="slide-out"
     >
       <div class="brand-sidebar">
@@ -313,15 +313,24 @@
           <div class="col s2">
             <img
               class="responsive-img"
-              style="width: 250px; height: 80px; margin-left: 16px"
+              style="
+                width: 250px;
+                height: 90px;
+                margin-left: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                padding: 10px;
+              "
               src="{{url_for('static',filename='welcome_note.png')}}"
               alt="Logo"
             />
           </div>
+          COAST
         </h1>
       </div>
 
       <ul
+        style="margin-top: 20px; margin-right: 20px"
         class="
           sidenav sidenav-collapsible
           leftside-navigation
@@ -331,16 +340,23 @@
           ps ps--active-y
         "
       >
+        <li class="active bold">
+          <button style="width: 250px; padding: 16px; margin-left: 8px">
+            <a href="{{url_for('index')}}" tabindex="0">
+              <i class="material-icons">COAST PROJECT</i>
+            </a>
+          </button>
+        </li>
         <li class="active bold open">
-          <button style="width: 250px; padding: 16px; margin-left: 16px">
-            <a href="#" tabindex="0">
+          <button style="width: 250px; padding: 16px; margin-left: 8px">
+            <a href="{{url_for('index')}}" tabindex="0">
               <i class="material-icons">dashboard</i>
               <span class="menu-title" data-i18n="Dashboard">Dashboard</span></a
             >
           </button>
         </li>
         <li class="bold">
-          <button style="width: 250px; padding: 16px; margin-left: 16px">
+          <button style="width: 250px; padding: 16px; margin-left: 8px">
             <a
               class="waves-effect waves-cyan"
               href="{{url_for('socialmedia')}}"
@@ -351,7 +367,7 @@
           </button>
         </li>
         <li class="bold">
-          <button style="width: 250px; padding: 16px; margin-left: 16px">
+          <button style="width: 250px; padding: 16px; margin-left: 8px">
             <a class="waves-effect waves-cyan" href="{{url_for('newpapers')}}">
               <i class="material-icons">Feed</i>
               <span class="menu-title" data-i18n="Chat">News Papers</span></a
@@ -359,7 +375,7 @@
           </button>
         </li>
         <li class="bold">
-          <button style="width: 250px; padding: 16px; margin-left: 16px">
+          <button style="width: 250px; padding: 16px; margin-left: 8px">
             <a class="waves-effect waves-cyan" href="{{url_for('transfer')}}">
               <i class="material-icons">Import</i>
               <span class="menu-title" data-i18n="Chat"

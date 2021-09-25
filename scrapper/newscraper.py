@@ -22,6 +22,9 @@ db_connect = create_engine(
 conn = db_connect.connect()
 timez = datetime.datetime.today().strftime("%Y/%m/%d")
 time = datetime.datetime.today().strftime("%Y-%m-%d")
+# timez = '2021/09/24'
+# time = '2021-09-24'
+source_type = "news"
 
 
 def gambuuze_scrapper():
@@ -69,10 +72,10 @@ def gambuuze_scrapper():
         df.to_csv(filename, index=False)
         client.files_upload(open(filename, "rb").read(), dropbox_path)
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
     else:
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
 
 
 def ssegwanga_scrapper():
@@ -124,10 +127,10 @@ def ssegwanga_scrapper():
         df.to_csv(filename, index=False)
         client.files_upload(open(filename, "rb").read(), dropbox_path)
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
     else:
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
 
 
 def dembe_scrapper():
@@ -153,7 +156,10 @@ def dembe_scrapper():
                     for division in soup.find_all("div", attrs={"class": "single-col"}):
                         for dayt in division.find_all("p", attrs={"class": "blog-date"}):
                             f = dayt.get_text()
-                            data = f.replace("th", "")
+                            data = f.replace("st", "")
+                            data = data.replace("th", "")
+                            data = data.replace("rd", "")
+                            data = data.replace("nd", "")
                             dat = datetime.datetime.strptime(
                                 data, '%B %d, %Y').strftime('%Y/%m/%d')
                             if dat == timez:
@@ -178,10 +184,10 @@ def dembe_scrapper():
         df.to_csv(filename, index=False)
         client.files_upload(open(filename, "rb").read(), dropbox_path)
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
     else:
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
 
 
 def galaxyradio_scrapper():
@@ -191,7 +197,7 @@ def galaxyradio_scrapper():
     dropbox_path = "/Coast_data/"+filename
     corpus_data = []
     headz = []
-    for page in range(1, 2):
+    for page in range(1, 6):
         url = "https://www.galaxyfm.co.ug/luganda/page/{}".format(page)
         r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
         soup = BeautifulSoup(r.content)
@@ -223,10 +229,10 @@ def galaxyradio_scrapper():
         df.to_csv(filename, index=False)
         client.files_upload(open(filename, "rb").read(), dropbox_path)
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
     else:
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
 
 
 def simba_scrapper():
@@ -289,14 +295,14 @@ def simba_scrapper():
         df.to_csv(filename, index=False)
         client.files_upload(open(filename, "rb").read(), dropbox_path)
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
     else:
         query = conn.execute(
-            "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(datasource, corpus_length))
+            "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(datasource, corpus_length, source_type))
 
 
-# simba_scrapper()
-# galaxyradio_scrapper()
-# dembe_scrapper()
-# ssegwanga_scrapper()
-# gambuuze_scrapper()
+simba_scrapper()
+galaxyradio_scrapper()
+dembe_scrapper()
+ssegwanga_scrapper()
+gambuuze_scrapper()

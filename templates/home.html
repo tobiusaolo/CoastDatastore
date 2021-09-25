@@ -11,45 +11,59 @@ content %}
             <td>
               <div
                 class="card text-white bg-primary mb-3"
-                style="max-width: 18rem"
+                style="
+                  max-width: 18rem;
+                  height: 100px;
+                  text-align: center;
+                  padding: 20px;
+                  color: white;
+                  background-color: #f1c40f;
+                "
               >
-                <div class="card-header">Header</div>
+                <div class="card-header">Dataset Size</div>
                 <div class="card-body">
-                  <h5 class="card-title">Primary card title</h5>
-                  <p class="card-text">
-                    Some quick example text to build on the card title and make
-                    up the bulk of the card's content.
-                  </p>
+                  <h5 class="card-title" style="color: white">{{corpusz}}</h5>
+                  <p class="card-text"></p>
                 </div>
               </div>
             </td>
             <td>
               <div
                 class="card text-white bg-primary mb-3"
-                style="max-width: 18rem"
+                style="
+                  max-width: 18rem;
+                  height: 100px;
+                  text-align: center;
+                  padding: 20px;
+                  color: white;
+                  background-color: #1e8449;
+                "
               >
-                <div class="card-header">Header</div>
+                <div class="card-header">SocialMedia</div>
                 <div class="card-body">
-                  <h5 class="card-title">Primary card title</h5>
-                  <p class="card-text">
-                    Some quick example text to build on the card title and make
-                    up the bulk of the card's content.
-                  </p>
+                  <h5 class="card-title" style="color: white">
+                    {{socialcorpus}}
+                  </h5>
                 </div>
               </div>
             </td>
             <td>
               <div
                 class="card text-white bg-primary mb-3"
-                style="max-width: 18rem"
+                style="
+                  max-width: 18rem;
+                  height: 100px;
+                  text-align: center;
+                  padding: 20px;
+                  color: white;
+                  background-color: #3498db;
+                "
               >
-                <div class="card-header">Header</div>
+                <div class="card-header">News Paper</div>
                 <div class="card-body">
-                  <h5 class="card-title">Primary card title</h5>
-                  <p class="card-text">
-                    Some quick example text to build on the card title and make
-                    up the bulk of the card's content.
-                  </p>
+                  <h5 class="card-title" style="color: white">
+                    {{newscorpus}}
+                  </h5>
                 </div>
               </div>
             </td>
@@ -65,7 +79,9 @@ content %}
             <tr>
               <th>Data Source</th>
               <th>Daily Corpus</th>
+              <th>Source Type</th>
               <th>Last Updated</th>
+              <th>Download</th>
             </tr>
           </thead>
           <tbody>
@@ -74,6 +90,8 @@ content %}
               <td>{{x[0]}}</td>
               <td>{{x[1]}}</td>
               <td>{{x[2]}}</td>
+              <td>{{x[3].strftime('%Y/%m/%d')}}</td>
+              <td><a>txt</a> or <a> CSV </a></td>
             </tr>
             {% endfor %}
           </tbody>

@@ -15,10 +15,22 @@ content %}
             <tr>
               <th>Data Source</th>
               <th>Daily Corpus</th>
+              <th>Source Type</th>
               <th>Last Updated</th>
+              <th>Download</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            {% for x in data%}
+            <tr>
+              <td>{{x[0]}}</td>
+              <td>{{x[1]}}</td>
+              <td>{{x[2]}}</td>
+              <td>{{x[3].strftime('%Y/%m/%d')}}</td>
+              <td><a>txt</a> or <a> CSV </a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
         </table>
         <!-- Content Area Ends -->
         <div class="content-overlay"></div>

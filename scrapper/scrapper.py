@@ -33,7 +33,7 @@ dropbox_path = "/Coast_data/"+filename
 
 def socialmedia():
     copora = []
-    datapoint = ['BANKOSAMUBS', 'BugandaOfficial', 'cpmayiga', 'bbstvug', 'gambuuze', 'UKBuganda',
+    datapoint = ['BANKOSAMUBS', 'BugandaOfficial', 'cpmayiga', 'bbstvug', 'gambuuze', 'UKBuganda', 'SaltTvUganda',
                  '892cbsFm', 'bukeddetv', 'bukeddeonline', 'DembeFm', 'simbaradio', 'sparktvuganda', 'radiobuddu98', 'BeatFMUganda', 'CbsfmUg']
     # datapoint = ['BugandaOfficial', 'cpmayiga']
     # Configure
@@ -44,8 +44,8 @@ def socialmedia():
         c.Username = sourcehandle
         # c.Limit = 10
         c.Lang = 'en'
-        c.Since = '2021-09-16'
-        c.Until = '2021-09-17'
+        c.Since = str(timez)
+        # c.Until = '2021-09-22'
         c.Store_json = True
         c.Hide_output = True
         c.Output = "MOH.json"
@@ -85,14 +85,16 @@ def socialmedia():
     df['Luganda'].replace('  ', np.nan, inplace=True)
     df = df.dropna(subset=['Luganda'])
     corpus_length = len(df)
+    source_type = "sociamedia"
+    overall_source = "Twitter"
     # df = df[~df['Luganda'].str.split().str.len().lt(3)]
     df.to_csv(filename, index=False)
     client.files_upload(open(filename, "rb").read(), dropbox_path)
     query = conn.execute(
-        "insert into socialmedia(datasource,corpus) values('{0}','{1}')".format(sourcehandle, corpus_length))
+        "insert into socialmedia(datasource,corpus,source_type) values('{0}','{1}','{2}')".format(overall_source, corpus_length, source_type))
 
 
-# socialmedia()
+socialmedia()
 # filename = "2021-09-13_socialmedia.csv"
 # upload_blob("gambuuzeug", filename, filename)
 # schedule.every(20).seconds.do(socialmedia)
